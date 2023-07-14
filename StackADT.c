@@ -1,99 +1,130 @@
 /*Type declaration for linked list implementation of the stack ADT */
-#indef _Stack_h
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#ifndef _Stack_h
 struct Node;
-typedef struct Node *ptrToNode;
+typedef struct Node *PtrToNode;
 typedef PtrToNode Stack;
 
-int IsEmpty(Stack S);
-Stack CreateStack( Void ):
-void DisposeStack( Stack S);
-void MakeEmpty( Stack S);
-void Push( ElementType X,Stack S);
-Elementtype Top( Stack S);
-void Pop(Stack S);
+int IsEmpty (Stack S);
+Stack CreateStack (void);
+void DisposeStack (Stack S);
+void MakeEmpty (Stack S);
+void Push (int X, Stack S);
+int Top (Stack S);
+void Pop (Stack S);
 
-#endif   /*_stack_h*/
+#endif	 /*_stack_h*/
 
 /*place in implementation file*/
 /*Stack implementation is a linked list with a header */
 struct Node
 {
-ElementType Element;
-PtrToNode Next;
+  int Element;
+  PtrToNode Next;
 };
 
 /*Routinr to test whether a stack is empty - linked list implementation*/
 int
-IsEmpty(Stack S)
+IsEmpty (Stack S)
 {
-return S->Next == NULL:
+  return S->Next == NULL;
 }
 
 
 /*Routine to create an empty stack - linked lis implementation*/
 
 Stack
-CreateStack(void)
+CreateStack (void)
 {
-Stack S;
-S=malloc(sizeof(struct Node));
-if (S==NULL)
-	FatalError("Out of space");
-MakeEmpty(S);
-return S;
+  Stack S;
+  S = malloc (sizeof (struct Node));
+  if (S == NULL)
+    perror ("Out of space");
+  MakeEmpty (S);
+  return S;
 }
 
 void
-MakeEmpty(Stack S)
+MakeEmpty (Stack S)
 {
-if (S == NULL)
-	Error("Must use CreateStack first");
-else
-	while (!IsEMpty(S))
-		Pop(S);
+  if (S == NULL)
+    perror ("Must use CreateStack first");
+  else
+    while (!IsEmpty (S))
+      Pop (S);
 }
 
 /*Routine to push onto a stack-linked list implementation*/
 
-void 
-Push(ElementType X, Stack S)
+void
+Push (int X, Stack S)
 {
-PtrToNode TmpCell;
-TmpCell = malloc(sizeof(struct Node));
-if(tmpCell == NULL)
-	FatalError("Out of space");
-else
-{
-	TmpCell->Element = X
-	TmpCell->Next = S->Next;
-	S->Next = TmpCell;
-}
+  PtrToNode TmpCell;
+  TmpCell = malloc (sizeof (struct Node));
+  if (TmpCell == NULL)
+    perror ("Out of space");
+  else
+    {
+      TmpCell->Element = X;
+      TmpCell->Next = S->Next;
+      S->Next = TmpCell;
+    }
 }
 
 /*Routine t return top element in a stack - Linked list implementation*/
-ELementType
-Top(Stack S)
+int
+Top (Stack S)
 {
-if(!IsEmpty(S))
-	return S->Next->Element;
-Error("Empty Stack");
-return 0;
+  if (!IsEmpty (S))
+    return S->Next->Element;
+  perror ("Empty Stack");
+  return 0;
 }
 
 /*Routine to pop from a stack-linked list implementation*/
 void
-Pop(Stack S)
+Pop (Stack S)
 {
-PtrToNode FirstCell;
-if(IsEmpty(S))
-	Error("Empty");
-else
+  PtrToNode FirstCell;
+  if (IsEmpty (S))
+    perror ("Empty");
+  else
+    {
+      FirstCell = S->Next;
+      S->Next = S->Next->Next;
+      free (FirstCell);
+    }
+}
+
+int
+main ()
 {
-	FirstCell =S->Next;
-	S->Next =S->Next->Next;
-	free(FirstCell);
+  Stack stack = CreateStack ();	// Create a new stack
+
+  /* Push some elements onto the stack */
+  Push (10, stack);
+  Push (20, stack);
+  Push (30, stack);
+
+  /* Retrieve and print the top element */
+  int topElement = Top (stack);
+  printf ("Top element: %d\n", topElement);
+
+  /* Pop elements from the stack until it becomes empty */
+  while (!IsEmpty (stack))
+    {
+      int poppedElement = Top (stack);
+      printf ("Popped element: %d\n", poppedElement);
+      Pop (stack);
+    }
+
+  // Free the memory occupied by the stack
+
+  return 0;
 }
-}
+
 /*The provided code snippet consists of a type declaration for the linked list implementation of the stack abstract data type (ADT) and an accompanying struct definition.*/
 
 /*The type declaration starts with an `#ifndef _Stack_h` directive, which is a conditional compilation statement that checks if the `_Stack_h` macro is not defined. This is typically used to prevent multiple inclusions of the same header file to avoid duplicate declarations.
